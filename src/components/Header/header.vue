@@ -320,7 +320,6 @@
             font-weight 200
             line-height: 12px
             color: rgb(255, 255, 255)
-
   .detail-close
     /*position relative*/
     width: 32px
