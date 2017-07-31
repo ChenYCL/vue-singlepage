@@ -232,6 +232,7 @@
         filter blur(10px)
     .detail
       position fixed
+      overflow hidden
       z-index 100
       top: 0
       left 0

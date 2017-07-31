@@ -15,7 +15,7 @@
       </div>
     </div>
     <!--路由的外链 点击了路由触发，页面变化的内容部分-->
-    <router-view></router-view>
+    <router-view :seller="seller"></router-view>
   </div>
 </template>
 <!--js脚本-->
@@ -59,6 +59,8 @@
 <style lang="stylus" rel="stylesheet/stylus" type="text/stylus">
   // 混合宏样式引入
   @import "./common/stylus/mxin.styl"
+  .header
+    overflow hidden
   .tab
     display: flex
     width: 100%
