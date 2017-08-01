@@ -106,7 +106,6 @@
         });
         return foods;
       }
-
     },
     methods: {
       selectMenu(index, event) {
@@ -149,6 +148,13 @@
           height += item.clientHeight;
           this.listHeight.push(height);
         }
+      }
+    },
+    // 事件属性
+    events: {
+//      父组件拿到子组件的已国
+      'cart.add'(target) {
+
       }
     }
   };

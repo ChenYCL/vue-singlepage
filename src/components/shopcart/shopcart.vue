@@ -4,7 +4,7 @@
     <div class="content">
       <div class="content-left">
         <div class="logo-wrapper">
-          <div class="logo"  :class="{'highlight':totalCount>0}">
+          <div class="logo" :class="{'highlight':totalCount>0}">
             <i class="icon-shopping_cart" :class="{'highlight':totalCount>0}"></i>
           </div>
           <div class="num" v-show="totalCount>0">{{totalCount}}</div>
@@ -17,6 +17,11 @@
           {{payDesc}}
         </div>
       </div>
+    </div>
+    <div class="ball-container">
+      <!--小球的容器-->
+      <div transition="drop" class="ball" v-for="ball in balls" v-show="ball.show"></div>
+      <div class="inner"></div>
     </div>
   </div>
 </template>
@@ -42,6 +47,28 @@
       minPrice: {
         type: Number,
         default: 0
+      }
+    },
+    data() {
+      // 小球路径
+      return {
+        balls: [
+          {
+            show: false,
+          },
+          {
+            show: false,
+          },
+          {
+            show: false,
+          },
+          {
+            show: false,
+          },
+          {
+            show: false,
+          }
+        ]
       }
     },
 //    计算选择商品的总价
@@ -181,4 +208,20 @@
           &.enough
             background-color #00b43c
             color: #fff
+    .ball-container
+      .ball
+        position: fixed
+        left 32px
+        bottom: 22px
+        z-index 200
+        &.drop-tansition
+          transition: all 0.5s
+          .inner
+            width 16px
+            height 16px
+            border-radius 50%
+            color:  rgb(0,160,220)
+            transition: all 0.5s
+
+
 </style>
