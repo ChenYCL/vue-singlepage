@@ -31,14 +31,13 @@
         } else {
           this.food.count++;
         }
-        // 向上派发事件
-//        this.$dispatch('cart.add',event.target);
+        // 点击了添加按钮，触发向上派发事件
+        this.$dispatch('cart.add', event.target);
       },
       decreseCount(event) {
         if (!event._constructed) {
           return;
-        }
-        ;
+        };
         if (this.food.count > 0) {
           this.food.count--;
         }
@@ -56,7 +55,7 @@
       transition: all 0.4s linear
       &.move-transition
         opacity: 1
-        transform: translate3D(0,0,0)
+        transform: translate3d(0,0,0)
         .inner
           display: inline-block
           font-size 24px
@@ -69,7 +68,7 @@
       &.move-enter,&.move-leave
         opacity 0
         // 3d 设置坐标  x,y,z
-        transform: translate3D(24px,0,0)
+        transform: translate3d(24px,0,0)
         .inner
           transform:rotate(180deg)
     .cart-count

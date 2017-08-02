@@ -20,13 +20,40 @@
     </div>
     <div class="ball-container">
       <!--小球的容器-->
-      <div transition="drop" class="ball" v-for="ball in balls" v-show="ball.show"></div>
-      <div class="inner"></div>
+      <div transition="drop" class="ball" v-for="ball in balls" v-show="ball.show">
+        <div class="inner inner-hook"></div>
+      </div>
+    </div>
+    <div class="shopcart-list" v-show="listShow">
+      <div class="list-head">
+        <h1 class="title">购物车</h1>
+        <span class="empty">清空</span>
+      </div>
+      <div class="list-content">
+        <ul>
+          <li class="food" v-for="food in selectFoods">
+            <span class="name">{{food.name}}</span>
+            <div class="price">
+                <span>
+                  ￥{{food.price * food.count}}
+                </span>
+            </div>
+            <div class="carcontrol-wrapper">
+              <cartcontrol :food="food"></cartcontrol>
+            </div>
+          </li>
+        </ul>
+      </div>
     </div>
   </div>
 </template>
 <script type="text/ecmascript-6">
+  import cartcontrol from '../cartcontrol/cartcontrol';
+
   export default {
+    components: {
+      cartcontrol
+    },
     props: {
 //      由goods组件告诉我们 选择了那种商品
       selectFoods: {
@@ -52,23 +79,27 @@
     data() {
       // 小球路径
       return {
-//        balls: [
-//          {
-//            show: false,
-//          },
-//          {
-//            show: false,
-//          },
-//          {
-//            show: false,
-//          },
-//          {
-//            show: false,
-//          },
-//          {
-//            show: false,
-//          }
-//        ]
+        balls: [
+          {
+            show: false
+          },
+          {
+            show: false
+          },
+          {
+            show: false
+          },
+          {
+            show: false
+          },
+          {
+            show: false
+          }
+        ],
+        // 已经下落的小球
+        dropBalls: [],
+//        判断购物篮是否展开
+        fold: false
       };
     },
 //    计算选择商品的总价
@@ -107,6 +138,67 @@
           return 'not-enough';
         } else {
           return 'enough';
+        }
+      }
+    },
+    methods: {
+      drop(el) {
+        for (let i = 0; i < this.balls.length; i++) {
+          let ball = this.balls[i];
+          if (!ball.show) {
+            ball.show = true;
+            ball.el = el;
+            this.dropBalls.push(ball);
+            return;
+          }
+        }
+      }
+    },
+//    对drop动画进行设置
+    transitions: {
+      drop: {
+        beforeEnter(el) {
+          let count = this.balls.length;
+          while (count--) {
+            let ball = this.balls[count];
+            if (ball.show) {
+//              获取元素相对于视口的位置
+              // recat包含 left,top
+              let rect = ball.el.getBoundingClientRect();
+              let x = rect.left - 32;
+              let y = -(window.innerHeight - rect.top - 22);
+              console.log(x, y);
+              console.log(el);
+              el.style.display = '';
+//              设置3d
+              el.style.webkitTransform = `translate3d(0,${y}px,0)`;
+              el.style.transform = `translate3d(0,${y}px,0)`;
+              let inner = el.getElementsByClassName('inner-hook')[0];
+//             内层设置横向的位移
+              inner.style.webkitTransform = `translate3d(${x}px,0,0)`;
+              inner.style.transform = `translate3d(${x}px,0,0)`;
+            }
+          }
+        },
+        enter(el) {
+          /* eslint-disabled no-unused-vars */
+//          触发重绘
+          let rf = el.offsetHeight;
+          this.$nextTick(() => {
+            el.style.webkitTransform = 'translate3d(0,0,0)';
+            el.style.transform = 'translate3d(0,0,0)';
+            let inner = el.getElementsByClassName('inner-hook')[0];
+//              内层设置横向的位移
+            inner.style.webkitTransform = 'translate3d(0,0,0)';
+            inner.style.transform = 'translate3d(0,0,0)';
+          });
+        },
+        afterEnter(el) {
+          let ball = this.dropBalls.shift();
+          if (ball) {
+            ball.show = false;
+            el.style.display = 'none';
+          }
         }
       }
     }
@@ -210,18 +302,17 @@
             color: #fff
     .ball-container
       .ball
+      // 相对于视口 动画固定，用fixed固定布局
         position: fixed
         left 32px
         bottom: 22px
         z-index 200
-        &.drop-tansition
-          transition: all 0.5s
+        &.drop-transition
+          transition: all 0.5s cubic-bezier(.5, -0.29, .75, .41)
           .inner
             width 16px
             height 16px
             border-radius 50%
-            color: rgb(0, 160, 220)
+            background-color rgb(0, 160, 220)
             transition: all 0.5s
-
-
 </style>

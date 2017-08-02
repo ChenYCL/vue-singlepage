@@ -41,7 +41,7 @@
       </ul>
     </div>
     <shopcart :select-foods='selectFoods' :delivery-price="seller.deliveryPrice"
-              :min-price="seller.minPrice"></shopcart>
+              :min-price="seller.minPrice" v-ref:shopcart></shopcart>
   </div>
 </template>
 <script type="text/ecmascript-6">
@@ -119,6 +119,13 @@
 //        插件的方法，将滚动区域内滚动到某个元素位置，经历300s
         this.foodsScroll.scrollToElement(el, 300);
       },
+//      落下的方法
+      _drop(target) {
+//        访问子组件，在父组件里面 ，异步执行方法 优化动画体验 性能更好
+        this.$nextTick(() => {
+          this.$refs.shopcart.drop(target);
+        });
+      },
       _initScroll() {
         // 实例化better-scroll插件，传入要滚动的dom对象
         this.meunScroll = new BScroll(this.$els.menuWrapper, {
@@ -149,8 +156,13 @@
           this.listHeight.push(height);
         }
       }
-    }
+    },
     // 事件属性
+    events: {
+      'cart.add'(target) {
+        this._drop(target);
+      }
+    }
   };
 </script>
 <style lang='stylus' rel='stylesheet/stylus' type="text/stylus">
