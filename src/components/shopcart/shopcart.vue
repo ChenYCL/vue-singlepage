@@ -52,24 +52,24 @@
     data() {
       // 小球路径
       return {
-        balls: [
-          {
-            show: false,
-          },
-          {
-            show: false,
-          },
-          {
-            show: false,
-          },
-          {
-            show: false,
-          },
-          {
-            show: false,
-          }
-        ]
-      }
+//        balls: [
+//          {
+//            show: false,
+//          },
+//          {
+//            show: false,
+//          },
+//          {
+//            show: false,
+//          },
+//          {
+//            show: false,
+//          },
+//          {
+//            show: false,
+//          }
+//        ]
+      };
     },
 //    计算选择商品的总价
     computed: {
@@ -220,7 +220,7 @@
             width 16px
             height 16px
             border-radius 50%
-            color:  rgb(0,160,220)
+            color: rgb(0, 160, 220)
             transition: all 0.5s
 
 

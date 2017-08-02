@@ -32,7 +32,7 @@
           this.food.count++;
         }
         // 向上派发事件
-        this.$dispatch('cart.add',event.target);
+//        this.$dispatch('cart.add',event.target);
       },
       decreseCount(event) {
         if (!event._constructed) {

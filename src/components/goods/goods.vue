@@ -149,14 +149,8 @@
           this.listHeight.push(height);
         }
       }
-    },
-    // 事件属性
-    events: {
-//      父组件拿到子组件的已国
-      'cart.add'(target) {
-
-      }
     }
+    // 事件属性
   };
 </script>
 <style lang='stylus' rel='stylesheet/stylus' type="text/stylus">
