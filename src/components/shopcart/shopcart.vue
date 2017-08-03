@@ -12,8 +12,8 @@
         <div class="price" :class="{'highlight':totalPrice>0}">￥{{totalPrice}}</div>
         <div class="desc">另需配送￥{{deliveryPrice}}元</div>
       </div>
-      <div class="content-right">
-        <div class="pay" :class="payClass">
+      <div class="content-right" >
+        <div class="pay" :class="payClass" @click.stop.prevent="pay">
           {{payDesc}}
         </div>
       </div>
@@ -25,30 +25,32 @@
       </div>
     </div>
     <div class="shopcart-list" v-show="listShow" transition="fold">
-      <div class="list-head">
+      <div class="list-header">
         <h1 class="title">购物车</h1>
-        <span class="empty">清空</span>
+        <span class="empty" @click="empty">清空</span>
       </div>
-      <div class="list-content">
+      <div class="list-content list-content-hook" v-el:list-content>
         <ul>
           <li class="food" v-for="food in selectFoods">
-            <span class="name">{{food.name}}</span>
+            <div class="name">{{food.name}}</div>
+            <div class="cartcontrol-wrapper">
+              <cartcontrol :food="food"></cartcontrol>
+            </div>
             <div class="price">
                 <span>
                   ￥{{food.price * food.count}}
                 </span>
-            </div>
-            <div class="carcontrol-wrapper">
-              <cartcontrol :food="food"></cartcontrol>
             </div>
           </li>
         </ul>
       </div>
     </div>
   </div>
+  <div class="list-mask" @click="hideList" v-show="listShow" transition="fade"></div>
 </template>
 <script type="text/ecmascript-6">
   import cartcontrol from '../cartcontrol/cartcontrol';
+  import BScorll from 'better-scroll';
   export default {
     components: {
       cartcontrol
@@ -147,6 +149,17 @@
           return false;
         }
         let show = !this.fold;
+        if (show) {
+          this.$nextTick(() => {
+            if (!this.scroll) {
+              this.scroll = new BScorll(this.$els.listContent, {
+                click: true
+              });
+            } else {
+              this.scroll.refresh();
+            }
+          });
+        }
         return show;
       }
     },
@@ -161,6 +174,21 @@
             return;
           }
         }
+      },
+      pay() {
+        if (this.totalPrice < this.minPrice) {
+           return;
+        } else {
+          window.alert(`支付${this.totalPrice}`);
+        }
+      },
+      hideList() {
+        this.fold = true;
+      },
+      empty() {
+        this.selectFoods.forEach((food) => {
+          food.count = 0;
+        });
       },
       toggleList() {
 //        当购物车数量为0时  世界什么都没发生
@@ -221,11 +249,12 @@
   };
 </script>
 <style lang='stylus' rel='stylesheet/stylus' type="text/stylus">
+  @import "../../common/stylus/mxin.styl";
   .shopcart
     position: fixed
     left: 0
     bottom: 0
-    z-index: 50
+    z-index: 200
     width: 100%
     height: 48px
     .content
@@ -322,7 +351,7 @@
         position: fixed
         left 32px
         bottom: 22px
-        z-index 200
+        z-index 40
         &.drop-transition
           transition: all 0.5s cubic-bezier(.5, -0.29, .75, .41)
           .inner
@@ -338,10 +367,11 @@
       width 100%
       &.fold-transition
         transition: all .5s
+        // 不定高，让自身内容撑开
         transform translate3d(0,-100%,0)
       &.fold-enter,&.fold-leave
         transform translate3d(0,0,0)
-      .list-hedaer
+      .list-header
         height: 40px
         line-height 40px
         padding:0 18px
@@ -355,4 +385,45 @@
           float:right
           font-size 12px
           color: rgb(0,160,220)
+          // 内容区域，超过这个高度隐藏超出部分内容
+      .list-content
+        padding:0 18px
+        max-height: 217px
+        overflow hidden
+        background: #fff
+        .food
+          position: relative
+          padding 12px 0px
+          box-sizing border-box
+          border-1px(rgba( 7,17,27,0.1))
+          .name
+            line-height 24px
+            font-size 14px
+            color: rgb(7,17,27)
+          .price
+            position absolute
+            right: 90px
+            bottom: 12px
+            line-height 24px
+            font-size 14px
+            font-weight 700
+            color: rgb(240,20,20)
+          .cartcontrol-wrapper
+            position: absolute
+            right: 0
+            bottom: 6px
+  .list-mask
+    position absolute
+    left: 0
+    top: 0
+    height: 100%
+    width 100%
+    z-index 5
+    backdrop-filter: blur(10px)
+    &.fade-transition
+      opacity:1
+      background rgba(7,17,27,0.6)
+    &.fade-enter,&.fade-leave
+      opactiy:0
+      background: rgba(7,17,27,0)
 </style>
